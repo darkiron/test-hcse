@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Demo • UI (served by Nginx)</title>
+    <link rel="stylesheet" href="/ui/css/api-ui.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>UI de démo (servie par Nginx) — Connexion API + Offres/Produits</h1>
+      <div class="card grid">
+        <div class="col-6">
+          <h3>Etat connexion API</h3>
+          <div id="api-status">
+            <span class="status warn">Chargement…</span>
+          </div>
+          <div class="muted">Appelle <code>/api/user</code> (Sanctum). Si non loggé, attend 401.</div>
+        </div>
+        <div class="col-6">
+          <h3>Base URL</h3>
+          <div>
+            API: <code id="api-base"></code>
+          </div>
+          <div class="muted">UI statique servie par Nginx <code>http://localhost:8080/ui/</code> qui appelle l’API <code>http://localhost:8080</code>.</div>
+        </div>
+        <div class="col-12">
+          <h3>Offres publiées</h3>
+          <button id="btn-load-offers">Charger /api/offers</button>
+          <span id="offers-status" class="status warn" style="display:none"></span>
+          <pre id="offers-json" style="margin-top:8px"></pre>
+        </div>
+        <div class="col-12">
+          <h3>Produits d’une offre</h3>
+          <form id="products-form">
+            <label for="offer-id">Offer ID: </label>
+            <input id="offer-id" type="number" min="1" value="1" />
+            <button type="submit">Charger /api/offers/{id}/products</button>
+            <span id="products-status" class="status warn" style="display:none"></span>
+          </form>
+          <pre id="products-json" style="margin-top:8px"></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Dernière erreur API</h3>
+        <div id="last-error" class="muted">Aucune</div>
+      </div>
+
+      <div class="card">
+        <h3>Aide rapide</h3>
+        <ul>
+          <li>Relancer seeders: <code>docker compose exec app php artisan migrate:fresh --seed -n</code></li>
+          <li>API publique: <a href="http://localhost:8080/api/offers" target="_blank">/api/offers</a></li>
+        </ul>
+      </div>
+    </div>
+    <script type="module" src="/ui/js/api-ui.js"></script>
+  </body>
+  </html>

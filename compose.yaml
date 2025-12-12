@@ -10,6 +10,12 @@ services:
       - ./laravel:/var/www/html
     environment:
       - APP_ENV=local
+      - APP_DEBUG=true
+      # Xdebug
+      - XDEBUG_MODE=debug,develop
+      - XDEBUG_CLIENT_HOST=host.docker.internal
+      - XDEBUG_CLIENT_PORT=9003
+      - XDEBUG_START_WITH_REQUEST=yes
     depends_on:
       - db
     networks:
@@ -33,12 +39,7 @@ services:
     image: node:18-alpine
     container_name: laravel-app-node
     working_dir: /var/www/html
-    command: sh -c "npm ci && npm run dev"
-    ports:
-      - "5173:5173"
-    environment:
-      - VITE_HOST=0.0.0.0
-      - VITE_PORT=5173
+    command: sh -c "npm ci && npm run build && ls -la /var/www/html/public/build || true && tail -f /dev/null"
     volumes:
       - ./laravel:/var/www/html
     networks:
