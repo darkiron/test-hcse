@@ -174,6 +174,9 @@ docker volume rm test-hcse_main_db-data || true
 ```
 
 Notes:
-- Les images Docker personnalisées se trouvent dans `docker/php` (PHP-FPM + extensions: pdo_mysql, gd, intl, zip…) et `docker/nginx` (Nginx configuré pour Laravel).
+- Les fichiers d'infrastructure Docker sont regroupés dans `infra/docker` pour séparer clairement l'app et l'infra:
+  - PHP-FPM (Dockerfile + php.ini): `infra/docker/php`
+  - Nginx (Dockerfile + vhost): `infra/docker/nginx`
+- `compose.yaml` reste à la racine du projet (standard Docker Compose v2).
 - Le code est monté en volume pour un cycle de dev rapide. Pour un usage prod, préférez des images immuables avec `composer install --no-dev` et `npm run build` au build.
 
