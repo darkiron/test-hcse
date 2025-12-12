@@ -43,7 +43,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # PHP config
-COPY docker/php/php.ini /usr/local/etc/php/conf.d/99-custom.ini
+COPY infra/docker/php/php.ini /usr/local/etc/php/conf.d/99-custom.ini
 
 # Create a non-root user matching common UID/GID (1000)
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data || true

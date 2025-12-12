@@ -88,6 +88,7 @@ Prérequis
 
 Étapes rapides (local hors Docker)
 1. Cloner le repo et installer les dépendances
+   - cd laravel
    - composer install
    - npm ci
 2. Copier l’environnement
@@ -105,7 +106,7 @@ Prérequis
    - php artisan serve (ou via votre stack locale)
 
 Étapes avec Sail (optionnel)
-1. composer install && cp .env.example .env
+1. cd laravel && composer install && cp .env.example .env
 2. ./vendor/bin/sail up -d
 3. ./vendor/bin/sail artisan key:generate
 4. ./vendor/bin/sail artisan migrate --seed
@@ -113,8 +114,8 @@ Prérequis
 6. ./vendor/bin/sail npm ci && ./vendor/bin/sail npm run build
 
 Tests et qualité
-- Lancer les tests: phpunit ou php artisan test
-- Lancer PHPStan: vendor/bin/phpstan analyse --level=8 (ajustez le niveau si vous visez plus)
+- Lancer les tests: depuis `laravel/` → phpunit ou php artisan test
+- Lancer PHPStan: depuis `laravel/` → vendor/bin/phpstan analyse --level=8 (ajustez le niveau si vous visez plus)
 
 
 ## Démarrage avec Docker (compose)
@@ -124,8 +125,8 @@ Prérequis: Docker Desktop 4+, Docker Compose v2
 1) Préparer l'environnement
 - Copier l'exemple d'environnement et configurez la base de données pour Docker:
 ```
-cp .env.example .env
-# Dans .env, utilisez :
+cp laravel/.env.example laravel/.env
+# Dans laravel/.env, utilisez :
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
@@ -174,6 +175,7 @@ docker volume rm test-hcse_main_db-data || true
 ```
 
 Notes:
+- Le code applicatif Laravel a été déplacé sous `laravel/` à la racine du dépôt.
 - Les fichiers d'infrastructure Docker sont regroupés dans `infra/docker` pour séparer clairement l'app et l'infra:
   - PHP-FPM (Dockerfile + php.ini): `infra/docker/php`
   - Nginx (Dockerfile + vhost): `infra/docker/nginx`

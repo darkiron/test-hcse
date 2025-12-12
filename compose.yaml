@@ -7,7 +7,7 @@ services:
       dockerfile: infra/docker/php/Dockerfile
     container_name: laravel-app-php
     volumes:
-      - ./:/var/www/html
+      - ./laravel:/var/www/html
     environment:
       - APP_ENV=local
     depends_on:
@@ -23,7 +23,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./:/var/www/html
+      - ./laravel:/var/www/html
     depends_on:
       - app
     networks:
@@ -40,7 +40,7 @@ services:
       - VITE_HOST=0.0.0.0
       - VITE_PORT=5173
     volumes:
-      - ./:/var/www/html
+      - ./laravel:/var/www/html
     networks:
       - laravel
 

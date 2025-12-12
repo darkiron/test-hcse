@@ -4,6 +4,13 @@ storage/framework/cache/data
 storage/framework/sessions
 storage/framework/views
 storage/logs
+# App déplacée dans le sous-dossier laravel/
+laravel/node_modules
+laravel/vendor
+laravel/storage/framework/cache/data
+laravel/storage/framework/sessions
+laravel/storage/framework/views
+laravel/storage/logs
 .git
 .gitignore
 .env
