@@ -27,23 +27,17 @@ final class OfferReadRepositoryEloquent implements OfferReadRepository
                 return [];
             }
 
-            /** @var class-string $model */
-            $model = '\\App\\Models\\Offer';
-            /** @var \Illuminate\Database\Eloquent\Builder $query */
-            $query = $model::query();
+            $query = \App\Models\Offer::query();
 
-            // Si un scope Published existe, on l’utilise, sinon on tente une
-            // convention courante (published / is_published = true)
-            if (method_exists(\App\Models\Offer::class, 'scopePublished')) {
-                $query = $query->published();
-            } else {
-                // On ne sait pas le nom exact de la colonne, on essaie "published".
-                $query = $query->where('published', true);
-            }
+            // Notre schéma a une colonne d'état texte; on retient uniquement 'published'
+            $query->where('state', 'published');
 
-            // Charger les produits si la relation existe
+            // Charger les produits publiés uniquement si la relation existe
             if (method_exists(\App\Models\Offer::class, 'products')) {
-                $query = $query->with('products');
+                $query = $query->with(['products' => function ($q) {
+                    /** @var \Illuminate\Database\Eloquent\Builder $q */
+                    $q->where('state', 'published');
+                }]);
             }
 
             $offers = $query->get();
@@ -56,11 +50,17 @@ final class OfferReadRepositoryEloquent implements OfferReadRepository
                         $products[] = [
                             'id' => (int)($p->id ?? 0),
                             'name' => (string)($p->name ?? ''),
+                            'state' => (string)($p->state ?? ''),
                         ];
                     }
                 }
 
-                $out[] = new OfferDto((int)$offer->id, (string)($offer->title ?? ''), $products);
+                $out[] = new OfferDto(
+                    (int)$offer->id,
+                    (string)($offer->name ?? ''),
+                    (string)($offer->state ?? ''),
+                    $products
+                );
             }
 
             return $out;

@@ -11,6 +11,8 @@ services:
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
+      - SESSION_DRIVER=cookie
+      - SANCTUM_STATEFUL_DOMAINS=localhost:8080,127.0.0.1:8080
       # Xdebug
       - XDEBUG_MODE=debug,develop
       - XDEBUG_CLIENT_HOST=host.docker.internal
@@ -24,24 +26,28 @@ services:
   web:
     build:
       context: .
-      dockerfile: infra/docker/nginx/Dockerfile
-    container_name: laravel-app-nginx
+      dockerfile: infra/docker/caddy/Dockerfile
+    container_name: laravel-app-caddy
     ports:
       - "8080:80"
     volumes:
       - ./laravel:/var/www/html
+      - ./frontend/dist:/var/www/frontend/dist:ro
     depends_on:
       - app
+      - node
     networks:
       - laravel
 
   node:
     image: node:18-alpine
     container_name: laravel-app-node
-    working_dir: /var/www/html
-    command: sh -c "npm ci && npm run build && ls -la /var/www/html/public/build || true && tail -f /dev/null"
+    working_dir: /var/www/frontend
+    environment:
+      - CHOKIDAR_USEPOLLING=1
+    command: sh -c "npm ci && npm run build:watch"
     volumes:
-      - ./laravel:/var/www/html
+      - ./frontend:/var/www/frontend
     networks:
       - laravel
 
