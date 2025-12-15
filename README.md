@@ -140,10 +140,10 @@ DB_PASSWORD=secret
 docker compose up -d --build
 ```
 Services démarqués:
-- web (Nginx) sur http://localhost:8080
+- web (Caddy) sur http://localhost:8080
 - app (PHP-FPM)
 - db (MySQL 8) exposé sur 33060 (interne 3306)
-- node (Vite) sur http://localhost:5173 (mode dev)
+- node (build front en continu)
 
 3) Installer les dépendances et initialiser l'application
 ```
@@ -153,9 +153,14 @@ docker compose exec app php artisan migrate --seed
 docker compose exec app php artisan storage:link
 ```
 
-4) Frontend avec Vite
-- Le service `node` lance `npm ci && npm run dev` automatiquement et expose Vite sur 5173. En production, vous pouvez builder:
+4) Frontend (build SPA)
+- Le service `node` construit en continu `frontend/dist` avec:
 ```
+command: npm ci && npm run build:watch
+```
+- Pour forcer un build ponctuel:
+```
+docker compose exec node npm ci
 docker compose exec node npm run build
 ```
 
@@ -178,7 +183,7 @@ Notes:
 - Le code applicatif Laravel a été déplacé sous `laravel/` à la racine du dépôt.
 - Les fichiers d'infrastructure Docker sont regroupés dans `infra/docker` pour séparer clairement l'app et l'infra:
   - PHP-FPM (Dockerfile + php.ini): `infra/docker/php`
-  - Nginx (Dockerfile + vhost): `infra/docker/nginx`
+  - Caddy (Dockerfile + Caddyfile): `infra/docker/caddy`
 - `compose.yaml` reste à la racine du projet (standard Docker Compose v2).
 - Le code est monté en volume pour un cycle de dev rapide. Pour un usage prod, préférez des images immuables avec `composer install --no-dev` et `npm run build` au build.
 
