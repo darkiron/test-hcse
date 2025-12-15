@@ -2,7 +2,8 @@
 
 Ce dépôt est une base d’évaluation pour un·e développeur·se senior PHP/Laravel. L’objectif est d’améliorer l’application existante (architecture, qualité, tests, robustesse) sans casser son fonctionnement.
 
-Ce qui est livré dans cette branche (feature/infra-ddd) ✅
+
+Ce qui est livré dans ce répo ✅
 - 🌐 Reverse‑proxy Caddy (Nginx supprimé du projet)
 - 🔐 API sécurisée globalement (Sanctum stateful + rate limiting + 401 JSON — aucune redirection web)
 - 🎨 SPA full JavaScript structurée (Atomic Design) avec layout, pages (views) et routeur
