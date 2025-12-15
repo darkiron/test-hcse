@@ -1,16 +1,17 @@
-# Test technique Senior — HelloCSE (Laravel)
+# Test technique Senior — HelloCSE (Laravel) 👋
 
 Ce dépôt est une base d’évaluation pour un·e développeur·se senior PHP/Laravel. L’objectif est d’améliorer l’application existante (architecture, qualité, tests, robustesse) sans casser son fonctionnement.
 
-Ce qui est livré dans ce dépot
-- Reverse‑proxy Caddy (Nginx supprimé du projet)
-- API sécurisée globalement (Sanctum stateful + rate limiting + 401 JSON — aucune redirection web)
-- SPA full JavaScript structurée (Atomic Design) avec layout, pages (views) et routeur
-- Docker Compose prêt à l’emploi (PHP‑FPM + MySQL + Caddy + Node pour le build front)
+
+Ce qui est livré dans ce répo ✅
+- 🌐 Reverse‑proxy Caddy (Nginx supprimé du projet)
+- 🔐 API sécurisée globalement (Sanctum stateful + rate limiting + 401 JSON — aucune redirection web)
+- 🎨 SPA full JavaScript structurée (Atomic Design) avec layout, pages (views) et routeur
+- 🐳 Docker Compose prêt à l’emploi (PHP‑FPM + MySQL + Caddy + Node pour le build front)
 
 ---
 
-## Démarrage rapide avec Docker
+## Démarrage rapide avec Docker 🐳
 
 1) Préparer l’environnement
 ```bash
@@ -31,10 +32,10 @@ DB_PASSWORD=secret
 docker compose up -d --build
 ```
 Services exposés :
-- web (Caddy) → http://localhost:8080
-- app (PHP‑FPM)
-- db (MySQL) → port hôte 33060 (interne 3306)
-- node (build SPA)
+- 🌍 web (Caddy) → http://localhost:8080
+- 🐘 app (PHP‑FPM)
+- 🗄️ db (MySQL) → port hôte 33060 (interne 3306)
+- 🧱 node (build SPA)
 
 3) Installer et initialiser Laravel
 ```bash
@@ -44,7 +45,7 @@ docker compose exec app php artisan migrate --seed
 docker compose exec app php artisan storage:link
 ```
 
-4) Frontend (SPA)
+4) Frontend (SPA) 🎯
 - Le service `node` construit en continu `frontend/dist` (monté en lecture seule côté Caddy).
 - Pour forcer un build ponctuel :
 ```bash
@@ -52,13 +53,13 @@ docker compose exec node npm ci
 docker compose exec node npm run build
 ```
 
-Vérifications rapides
+Vérifications rapides ✅
 - SPA : http://localhost:8080/login (redirige vers /dashboard après login)
 - API : http://localhost:8080/api/offers → 401 (anonyme), 200 après authentification
 
 ---
 
-## Démarrage local (hors Docker)
+## Démarrage local (hors Docker) 💻
 Pré‑requis : PHP 8.4+, Composer 2, Node 18+, MySQL/MariaDB (ou SQLite)
 ```bash
 cd laravel
@@ -76,12 +77,12 @@ php artisan serve
 
 ---
 
-## Sécurité et flux d’authentification (Sanctum)
+## Sécurité et flux d’authentification (Sanctum) 🔐
 - L’API est sécurisée globalement : toutes les routes de lecture/écriture d’offres/produits exigent une session authentifiée (cookies HTTP‑only + CSRF).
 - Rate‑limit : 60 requêtes/minute globalement sur `/api/*`. Anti‑bruteforce sur `POST /api/login` : 6/minute.
 - Sans cookies valides : l’API renvoie 401 JSON (jamais de redirection web).
 
-Exemple (curl)
+Exemple (curl) 🧪
 ```bash
 # 1) Obtenir les cookies CSRF
 curl -i -c cookies.txt -b cookies.txt http://localhost:8080/sanctum/csrf-cookie
@@ -109,7 +110,7 @@ curl -i -X POST -H "X-XSRF-TOKEN: $XSRF" -b cookies.txt http://localhost:8080/ap
 
 ---
 
-## Structure du front (SPA Atomic Design)
+## Structure du front (SPA Atomic Design) 🧱
 Dossier `frontend/` :
 - layout/
   - `MainLayout.js` : assemble Navbar + vues
@@ -130,7 +131,7 @@ Dossier `frontend/` :
 - bootstrap
   - `index.html` minimal, `app.js` (monte le layout), `main.js` (enregistre les routes et les views)
 
-Routes SPA
+Routes SPA 🧭
 - `/login` → formulaire (XHR visible) → redirection `/dashboard` après succès
 - `/dashboard` → profil (`GET /api/user`)
 - `/offers` → listing d’offres (`GET /api/offers` après login)
@@ -138,7 +139,7 @@ Routes SPA
 
 ---
 
-## Endpoints API (extrait)
+## Endpoints API (extrait) 🔗
 - Auth
   - `GET /sanctum/csrf-cookie` → 204
   - `POST /api/login` (email, password) → 200
@@ -152,7 +153,7 @@ Sans cookies de session, ces endpoints renvoient 401 JSON.
 
 ---
 
-## Tests & Qualité
+## Tests & Qualité 🧪
 ```bash
 docker compose exec app php artisan test
 ```
@@ -163,7 +164,7 @@ docker compose exec app ./vendor/bin/phpstan analyse --level=8
 
 ---
 
-## Débogage (Xdebug)
+## Débogage (Xdebug) 🪲
 - Xdebug activé côté PHP en dev.
 - IDE :
   - Écoute sur 9003
@@ -176,7 +177,7 @@ docker compose logs -f app
 
 ---
 
-## Organisation du dépôt
+## Organisation du dépôt 🗂️
 ```
 laravel/         # Application Laravel (code, migrations, tests…)
 frontend/        # SPA (Atomic Design)
@@ -186,7 +187,7 @@ infra/docker/
 compose.yaml     # Orchestration Docker
 ```
 
-Notes
+Notes 📝
 - Nginx a été retiré du repo ; le reverse‑proxy est Caddy. Si vous voyez encore « nginx » dans votre environnement, c’est un reliquat local à nettoyer.
 - En production, privilégier des images immuables (composer --no-dev et build front au build d’image plutôt qu’en watch).
 
