@@ -1,132 +1,23 @@
-# Test technique senior — HelloCSE (Laravel)
+# Test technique Senior — HelloCSE (Laravel)
 
-Bienvenue ! Ce dépôt sert de base à un test technique destiné à un·e développeur·se senior PHP/Laravel.
-Votre mission est d’améliorer techniquement l’application existante autour de la gestion d’offres et de produits.
+Ce dépôt est une base d’évaluation pour un·e développeur·se senior PHP/Laravel. L’objectif est d’améliorer l’application existante (architecture, qualité, tests, robustesse) sans casser son fonctionnement.
 
-## Objectif général
+Ce qui est livré dans ce dépot
+- Reverse‑proxy Caddy (Nginx supprimé du projet)
+- API sécurisée globalement (Sanctum stateful + rate limiting + 401 JSON — aucune redirection web)
+- SPA full JavaScript structurée (Atomic Design) avec layout, pages (views) et routeur
+- Docker Compose prêt à l’emploi (PHP‑FPM + MySQL + Caddy + Node pour le build front)
 
-- Apporter des améliorations structurelles et de qualité au projet (architecture, tests, qualité de code) tout en conservant le fonctionnement existant.
-- L’enjeu est d’évaluer votre capacité à raisonner, structurer, sécuriser et tester un code Laravel dans un contexte proche de la production.
+---
 
-## Contenu actuel du projet (à connaître)
-- Back-office simple de gestion d’offres et des produits liés à une offre.
-- API publique GET /api/offers retournant uniquement les offres et produits publiés.
+## Démarrage rapide avec Docker
 
-## Ce que nous attendons (périmètre minimal)
-
-- Temps indicatif réalisation : 3 à 8 heures.
-- Pas de sur-investissement UI/Design. Restez focalisé sur la qualité backend et l’ingénierie.
-- Préférez des améliorations progressives et pragmatiques à une réécriture totale.
-
-1) Architecture et séparation des responsabilités
-   - Extraire le code métier dans des services/domain pour découpler la couche HTTP de la logique métier.
-   - Introduire si nécessaire des classes dédiées (ex: Actions/Services, DTO, Repositories, Query Objects) avec un design clair, testable et documenté.
-
-2) Qualité de code et outillage
-   - PHPStan niveau 8 minimum (viser 9 si pertinent) et correction des erreurs remontées.
-   - Ajouter/Configurer d’autres outils que vous jugez pertinents (ex: Larastan, PHP-CS-Fixer/Pint, Psalm, Laravel Pint, Rector) avec une configuration minimale et reproductible.
-   - Respect des conventions (PSR-12, nommage, règles de complexité raisonnables, petites méthodes, dépendances explicites).
-
-3) Tests
-   - Écrire des tests unitaires PHPUnit ciblant la logique métier extraite (services, règles d’état, validations métiers, etc.).
-   - Ajouter des tests de feature pertinents (ex: endpoints, règles d’accès, flux critiques).
-   - Viser une couverture utile et significative sur les parties clés (pas de « test pour tester »).
-
-4) Données & démos
-   - Ajouter des seeders pour fournir un jeu de données de démonstration cohérent (offres + produits, états variés, images simulées si besoin).
-   - Veiller à ce que l’appli soit rapidement exploitable après installation (un développeur doit voir une UI et des données en quelques commandes).
-
-5) Robustesse
-   - Gestion propre des validations (FormRequest, règles partagées, messages clairs).
-   - Gestion des fichiers (images) sécurisée et robuste.
-   - Pagination, tri et filtres côté back si nécessaire pour la scalabilité.
-   - API Resources/Transformers pour les réponses API (contract stable, filtrage des champs, sérialisation).
-
-6) Documentation
-   - Architecture et décisions clés
-   - Comment lancer tests et outils
-   - Comment naviguer dans le code
-
-## Bonus appréciés (optionnels, choisissez selon le temps / pertinence)
-
-- Patterns avancés (DDD light, Ports/Adapters, Repositories, Query Services, Specification, Value Objects).
-- Extraire la logique liée aux états (transitions possibles, règles d’affichage, filtrages par défaut)
-- Politique de sécurité (Policies/Gates), middleware d’auth, rate limiting, validation d’input stricte.
-- Documentation API (OpenAPI/Swagger), versionnement API, pagination/tri/filtrage RESTful.
-- Optimisations perfs (index DB, N+1, caches, Eager Loading par défaut, Scopes).
-- CI (GitHub Actions) exécutant lint + static analysis + tests.
-- Docker/Sail prêt à l’emploi, Makefile ou scripts pour simplifier les commandes.
-- Observers, Events/Listeners, Notifications, Queues (jobs pour traitement d’images par ex.).
-
-## Critères d’évaluation
-- Clarté de l’architecture, découpage des responsabilités, lisibilité.
-- Qualité des tests (pertinence, couverture utile, isolation, fidélité à la logique métier).
-- Niveau de qualité de code (typages, immutabilité quand pertinent, complexité maîtrisée, cohérence globale, commentaires ciblés).
-- Robustesse des choix techniques (validation, gestion des états, gestion fichiers, erreurs, sécurité basique).
-- Expérience de dev et reproductibilité (setup simple, scripts, doc, seeders, cohérence des environnements).
-- Pertinence des bonus si présents (pas nécessaire d’en faire beaucoup; qualité > quantité).
-
-## Consignes de rendu
-- Travaillez dans une branche dédiée et ouvrez une Pull Request (ou fournissez un patch) expliquée clairement.
-- Commits atomiques et messages explicites.
-- Ajoutez/éditez ce README pour décrire vos choix techniques: architecture, services, tests, outillage, limites connues et pistes d’amélioration.
-- Si vous ajoutez d’autres outils (Pint, Psalm, Rector…), documentez les commandes dans ce README ou un Makefile.
-- Indiquez le temps passé et ce que vous auriez fait avec plus de temps.
-
-## Questions
-Si un point n’est pas clair, documentez vos hypothèses directement dans la PR/README et avancez. Vous pouvez proposer des alternatives techniques et expliquer vos arbitrages.
-
-Bon courage et merci !
-
-## Environnement et installation
-Prérequis
-- PHP 8.4+
-- Composer 2
-- Node 18+ et npm
-- MySQL/MariaDB (ou SQLite si vous préférez pour l’exercice)
-- Optionnel: Docker + Laravel Sail
-
-Étapes rapides (local hors Docker)
-1. Cloner le repo et installer les dépendances
-   - cd laravel
-   - composer install
-   - npm ci
-2. Copier l’environnement
-   - cp .env.example .env
-   - Configurer la base de données (DB_*) et le stockage local.
-3. Générer la clé d’application
-   - php artisan key:generate
-4. Exécuter les migrations et seeders
-   - php artisan migrate --seed
-5. Lier le stockage public
-   - php artisan storage:link
-6. Builder les assets (si UI utilisée)
-   - npm run build (ou npm run dev pour le watch)
-7. Lancer l’application
-   - php artisan serve (ou via votre stack locale)
-
-Étapes avec Sail (optionnel)
-1. cd laravel && composer install && cp .env.example .env
-2. ./vendor/bin/sail up -d
-3. ./vendor/bin/sail artisan key:generate
-4. ./vendor/bin/sail artisan migrate --seed
-5. ./vendor/bin/sail artisan storage:link
-6. ./vendor/bin/sail npm ci && ./vendor/bin/sail npm run build
-
-Tests et qualité
-- Lancer les tests: depuis `laravel/` → phpunit ou php artisan test
-- Lancer PHPStan: depuis `laravel/` → vendor/bin/phpstan analyse --level=8 (ajustez le niveau si vous visez plus)
-
-
-## Démarrage avec Docker (compose)
-
-Prérequis: Docker Desktop 4+, Docker Compose v2
-
-1) Préparer l'environnement
-- Copier l'exemple d'environnement et configurez la base de données pour Docker:
-```
+1) Préparer l’environnement
+```bash
 cp laravel/.env.example laravel/.env
-# Dans laravel/.env, utilisez :
+```
+Dans `laravel/.env` (mode Docker), utiliser :
+```ini
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
@@ -135,88 +26,168 @@ DB_USERNAME=laravel
 DB_PASSWORD=secret
 ```
 
-2) Lancer l'infrastructure
-```
+2) Lancer l’infrastructure
+```bash
 docker compose up -d --build
 ```
-Services démarqués:
-- web (Caddy) sur http://localhost:8080
-- app (PHP-FPM)
-- db (MySQL 8) exposé sur 33060 (interne 3306)
-- node (build front en continu)
+Services exposés :
+- web (Caddy) → http://localhost:8080
+- app (PHP‑FPM)
+- db (MySQL) → port hôte 33060 (interne 3306)
+- node (build SPA)
 
-3) Installer les dépendances et initialiser l'application
-```
+3) Installer et initialiser Laravel
+```bash
 docker compose exec app composer install
 docker compose exec app php artisan key:generate
 docker compose exec app php artisan migrate --seed
 docker compose exec app php artisan storage:link
 ```
 
-4) Frontend (build SPA)
-- Le service `node` construit en continu `frontend/dist` avec:
-```
-command: npm ci && npm run build:watch
-```
-- Pour forcer un build ponctuel:
-```
+4) Frontend (SPA)
+- Le service `node` construit en continu `frontend/dist` (monté en lecture seule côté Caddy).
+- Pour forcer un build ponctuel :
+```bash
 docker compose exec node npm ci
 docker compose exec node npm run build
 ```
 
-5) Commandes utiles
+Vérifications rapides
+- SPA : http://localhost:8080/login (redirige vers /dashboard après login)
+- API : http://localhost:8080/api/offers → 401 (anonyme), 200 après authentification
+
+---
+
+## Démarrage local (hors Docker)
+Pré‑requis : PHP 8.4+, Composer 2, Node 18+, MySQL/MariaDB (ou SQLite)
+```bash
+cd laravel
+composer install
+npm ci
+
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+
+npm run build   # ou npm run dev
+php artisan serve
 ```
+
+---
+
+## Sécurité et flux d’authentification (Sanctum)
+- L’API est sécurisée globalement : toutes les routes de lecture/écriture d’offres/produits exigent une session authentifiée (cookies HTTP‑only + CSRF).
+- Rate‑limit : 60 requêtes/minute globalement sur `/api/*`. Anti‑bruteforce sur `POST /api/login` : 6/minute.
+- Sans cookies valides : l’API renvoie 401 JSON (jamais de redirection web).
+
+Exemple (curl)
+```bash
+# 1) Obtenir les cookies CSRF
+curl -i -c cookies.txt -b cookies.txt http://localhost:8080/sanctum/csrf-cookie
+
+# 2) Extraire le token XSRF
+XSRF=$(perl -ne 'print $1 if /XSRF-TOKEN\t([^\n]+)/' cookies.txt | python - <<PY
+import urllib.parse,sys;print(urllib.parse.unquote(sys.stdin.read()))
+PY
+)
+
+# 3) Login (remplacez les identifiants si besoin)
+curl -i -X POST http://localhost:8080/api/login \
+  -H "Content-Type: application/json" \
+  -H "X-XSRF-TOKEN: $XSRF" \
+  -c cookies.txt -b cookies.txt \
+  --data '{"email":"admin@example.com","password":"secret"}'
+
+# 4) Appels protégés
+curl -i -b cookies.txt http://localhost:8080/api/user
+curl -i -b cookies.txt http://localhost:8080/api/offers
+
+# 5) Logout
+curl -i -X POST -H "X-XSRF-TOKEN: $XSRF" -b cookies.txt http://localhost:8080/api/logout
+```
+
+---
+
+## Structure du front (SPA Atomic Design)
+Dossier `frontend/` :
+- layout/
+  - `MainLayout.js` : assemble Navbar + vues
+- views/
+  - `LoginView.js`, `DashboardView.js`, `OffersView.js`, `ProductsView.js`
+- atoms/
+  - `Button.js`, `Input.js`
+- molecules/
+  - `Navbar.js`
+- organisms/
+  - `LoginCard.js`
+- components/
+  - `OffersList.js`, `ProductsList.js`
+- api/
+  - `api.js` : `apiFetch` (credentials + auto‑CSRF), `csrf`, `login`, `me`, `logout`, `listOffers`…
+- routeur
+  - `router.js` (History API : routes exactes + dynamiques RegExp)
+- bootstrap
+  - `index.html` minimal, `app.js` (monte le layout), `main.js` (enregistre les routes et les views)
+
+Routes SPA
+- `/login` → formulaire (XHR visible) → redirection `/dashboard` après succès
+- `/dashboard` → profil (`GET /api/user`)
+- `/offers` → listing d’offres (`GET /api/offers` après login)
+- `/offers/:id/products` → produits d’une offre
+
+---
+
+## Endpoints API (extrait)
+- Auth
+  - `GET /sanctum/csrf-cookie` → 204
+  - `POST /api/login` (email, password) → 200
+  - `POST /api/logout` → 204
+  - `GET /api/user` → 200 (auth requis)
+- Données (auth requis)
+  - `GET /api/offers`
+  - `GET /api/offers/{offer}/products`
+
+Sans cookies de session, ces endpoints renvoient 401 JSON.
+
+---
+
+## Tests & Qualité
+```bash
 docker compose exec app php artisan test
+```
+Analyse statique (Larastan/PHPStan niveau 8)
+```bash
 docker compose exec app ./vendor/bin/phpstan analyse --level=8
+```
+
+---
+
+## Débogage (Xdebug)
+- Xdebug activé côté PHP en dev.
+- IDE :
+  - Écoute sur 9003
+  - Mappings : `/var/www/html` (container) ↔ `./laravel` (host)
+- Logs utiles :
+```bash
 docker compose logs -f web
 docker compose logs -f app
 ```
 
-6) Arrêt/Nettoyage
+---
+
+## Organisation du dépôt
 ```
-docker compose down
-# Pour supprimer les données MySQL locales
-docker volume rm test-hcse_main_db-data || true
+laravel/         # Application Laravel (code, migrations, tests…)
+frontend/        # SPA (Atomic Design)
+infra/docker/
+  ├─ php/        # Dockerfile PHP-FPM + conf PHP
+  └─ caddy/      # Dockerfile + Caddyfile (proxy + SPA + /api)
+compose.yaml     # Orchestration Docker
 ```
 
-Notes:
-- Le code applicatif Laravel a été déplacé sous `laravel/` à la racine du dépôt.
-- Les fichiers d'infrastructure Docker sont regroupés dans `infra/docker` pour séparer clairement l'app et l'infra:
-  - PHP-FPM (Dockerfile + php.ini): `infra/docker/php`
-  - Caddy (Dockerfile + Caddyfile): `infra/docker/caddy`
-- `compose.yaml` reste à la racine du projet (standard Docker Compose v2).
-- Le code est monté en volume pour un cycle de dev rapide. Pour un usage prod, préférez des images immuables avec `composer install --no-dev` et `npm run build` au build.
+Notes
+- Nginx a été retiré du repo ; le reverse‑proxy est Caddy. Si vous voyez encore « nginx » dans votre environnement, c’est un reliquat local à nettoyer.
+- En production, privilégier des images immuables (composer --no-dev et build front au build d’image plutôt qu’en watch).
 
-## Debug et logs (Xdebug inclus)
-
-En environnement Docker, Xdebug est déjà installé et configuré dans l'image PHP-FPM.
-
-1) Pré-requis côté projet
-- Dans `laravel/.env` vérifiez: 
-  - `APP_ENV=local`
-  - `APP_DEBUG=true`
-  - `LOG_CHANNEL=stack` (ou `daily` si vous préférez la rotation)
-
-2) Variables Xdebug côté conteneur (déjà paramétrées via Compose)
-- `XDEBUG_MODE=debug,develop`
-- `XDEBUG_START_WITH_REQUEST=yes`
-- `XDEBUG_CLIENT_HOST=host.docker.internal`
-- `XDEBUG_CLIENT_PORT=9003`
-
-3) Configuration IDE (exemples)
-- PhpStorm:
-  - Écouter les connexions Xdebug sur le port 9003.
-  - Mapping des chemins: `/var/www/html` (conteneur) ↔ `./laravel` (hôte).
-- VS Code (extension PHP Debug):
-  - Port 9003, pathMappings `{"/var/www/html": "${workspaceFolder}/laravel"}`.
-
-4) Vérification
-- Rebuild et relance:
-  - `docker compose build --no-cache`
-  - `docker compose up -d`
-- Poser un breakpoint dans un contrôleur et charger http://localhost:8080.
-- Logs:
-  - Laravel: `laravel/storage/logs/laravel.log`
-  - PHP: `laravel/storage/logs/php-error.log`
-  - `docker compose logs -f app` et `docker compose logs -f web` pour les journaux conteneurs.
-
+Bon dev !
