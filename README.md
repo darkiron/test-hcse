@@ -140,10 +140,10 @@ DB_PASSWORD=secret
 docker compose up -d --build
 ```
 Services démarqués:
-- web (Nginx) sur http://localhost:8080
+- web (Caddy) sur http://localhost:8080
 - app (PHP-FPM)
 - db (MySQL 8) exposé sur 33060 (interne 3306)
-- node (Vite) sur http://localhost:5173 (mode dev)
+- node (build front en continu)
 
 3) Installer les dépendances et initialiser l'application
 ```
@@ -153,9 +153,14 @@ docker compose exec app php artisan migrate --seed
 docker compose exec app php artisan storage:link
 ```
 
-4) Frontend avec Vite
-- Le service `node` lance `npm ci && npm run dev` automatiquement et expose Vite sur 5173. En production, vous pouvez builder:
+4) Frontend (build SPA)
+- Le service `node` construit en continu `frontend/dist` avec:
 ```
+command: npm ci && npm run build:watch
+```
+- Pour forcer un build ponctuel:
+```
+docker compose exec node npm ci
 docker compose exec node npm run build
 ```
 
@@ -178,7 +183,40 @@ Notes:
 - Le code applicatif Laravel a été déplacé sous `laravel/` à la racine du dépôt.
 - Les fichiers d'infrastructure Docker sont regroupés dans `infra/docker` pour séparer clairement l'app et l'infra:
   - PHP-FPM (Dockerfile + php.ini): `infra/docker/php`
-  - Nginx (Dockerfile + vhost): `infra/docker/nginx`
+  - Caddy (Dockerfile + Caddyfile): `infra/docker/caddy`
 - `compose.yaml` reste à la racine du projet (standard Docker Compose v2).
 - Le code est monté en volume pour un cycle de dev rapide. Pour un usage prod, préférez des images immuables avec `composer install --no-dev` et `npm run build` au build.
+
+## Debug et logs (Xdebug inclus)
+
+En environnement Docker, Xdebug est déjà installé et configuré dans l'image PHP-FPM.
+
+1) Pré-requis côté projet
+- Dans `laravel/.env` vérifiez: 
+  - `APP_ENV=local`
+  - `APP_DEBUG=true`
+  - `LOG_CHANNEL=stack` (ou `daily` si vous préférez la rotation)
+
+2) Variables Xdebug côté conteneur (déjà paramétrées via Compose)
+- `XDEBUG_MODE=debug,develop`
+- `XDEBUG_START_WITH_REQUEST=yes`
+- `XDEBUG_CLIENT_HOST=host.docker.internal`
+- `XDEBUG_CLIENT_PORT=9003`
+
+3) Configuration IDE (exemples)
+- PhpStorm:
+  - Écouter les connexions Xdebug sur le port 9003.
+  - Mapping des chemins: `/var/www/html` (conteneur) ↔ `./laravel` (hôte).
+- VS Code (extension PHP Debug):
+  - Port 9003, pathMappings `{"/var/www/html": "${workspaceFolder}/laravel"}`.
+
+4) Vérification
+- Rebuild et relance:
+  - `docker compose build --no-cache`
+  - `docker compose up -d`
+- Poser un breakpoint dans un contrôleur et charger http://localhost:8080.
+- Logs:
+  - Laravel: `laravel/storage/logs/laravel.log`
+  - PHP: `laravel/storage/logs/php-error.log`
+  - `docker compose logs -f app` et `docker compose logs -f web` pour les journaux conteneurs.
 

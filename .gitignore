@@ -21,3 +21,16 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Laravel paths (monorepo layout)
+laravel/vendor/
+laravel/node_modules/
+laravel/storage/
+laravel/public/build/
+laravel/public/storage/
+laravel/.env
+laravel/.env.*
