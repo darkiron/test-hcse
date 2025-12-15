@@ -11,11 +11,21 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="API">
+            <directory>tests/Feature/Api</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
             <directory>app</directory>
         </include>
+        <exclude>
+            <directory>vendor</directory>
+            <directory>bootstrap</directory>
+            <directory>storage</directory>
+            <directory>database</directory>
+            <directory>routes</directory>
+        </exclude>
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>
@@ -27,7 +37,7 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
+        <env name="SESSION_DRIVER" value="file"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>

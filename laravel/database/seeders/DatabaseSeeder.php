@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +14,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Reproductibilité basique pour les démos/tests manuels
+        try { fake()->seed(1337); } catch (\Throwable) {}
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Conserver un utilisateur de test si besoin
+        $this->call([AdminUserSeeder::class]);
+
+        // Données métier (offres + produits)
+        $this->call([
+            OfferSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }
