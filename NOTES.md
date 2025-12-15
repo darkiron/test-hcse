@@ -1,5 +1,5 @@
 # Notes
-14h30
+
 1. dockerisation de l’application
 2. Séparation app/infra: l’application Laravel est déplacée sous `laravel/` (artisan, app, config, routes, resources, public, tests, composer.json, etc.).
    - Infra Docker conservée dans `infra/docker`.

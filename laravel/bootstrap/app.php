@@ -33,5 +33,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Force 401 JSON for API when unauthenticated, never redirect to a web route
+        $exceptions->render(function (Illuminate\Auth\AuthenticationException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json(['message' => 'Unauthenticated'], 401);
+            }
+            return null; // let Laravel handle non-API as usual
+        });
     })->create();
